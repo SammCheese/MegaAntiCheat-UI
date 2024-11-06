@@ -76,7 +76,6 @@ const PlayerHistory = () => {
       const query64 = getSteamID64(query.trim());
       const result =
         query64 &&
-        query64 === query &&
         ![newRecent, newArchive].flat().some((p) => p.steamID64 === query64)
           ? query64
           : undefined;
