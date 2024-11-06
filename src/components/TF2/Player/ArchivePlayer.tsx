@@ -22,6 +22,9 @@ import {
   convertSteamID64toSteamID2,
   convertSteamID64toSteamID3,
 } from '@api/steamid';
+import { profileLinks } from '../../../constants/playerConstants';
+import { setSettingKey } from '@api/preferences';
+import ConfirmNavigationModal from './Modals/ConfirmNavigationModal';
 
 interface ArchivePlayerProps {
   player: ArchivePlayerInfo;
@@ -34,6 +37,8 @@ interface ArchivePlayerProps {
   cheatersInLobby: ArchivePlayerInfo[];
   isRefreshing: boolean;
   setRefreshing: (b: boolean) => void;
+  settings: Settings['external'];
+  setSettings: React.Dispatch<React.SetStateAction<Settings['external']>>;
 }
 
 const ArchivePlayer = ({
@@ -45,6 +50,8 @@ const ArchivePlayer = ({
   cheatersInLobby,
   isRefreshing,
   setRefreshing,
+  settings,
+  setSettings,
 }: ArchivePlayerProps) => {
   // Context Menu
   const { showMenu } = React.useContext(ContextMenuContext);
@@ -101,11 +108,45 @@ const ArchivePlayer = ({
     });
   }, [player.steamInfo?.pfp]);
 
+  const formatUrl = (url: string) => {
+    url = url.replace('{{ID64}}', player.steamID64);
+    return url;
+  };
+
   const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     const menuItems: MenuItem[] = [
       {
         label: 'Open Profile',
+        multiOptions: [
+          {
+            label: 'Steam Profile',
+            onClick: () => parent.open(urlToOpen, '_blank'),
+          },
+          ...profileLinks.map(([name, url]) => ({
+            label: name,
+            onClick: () => {
+              if (settings.confirmExternalLinks ?? true) {
+                openModal(
+                  <ConfirmNavigationModal
+                    link={formatUrl(url)}
+                    onConfirm={() => parent.open(formatUrl(url), '_blank')}
+                    onDontShowAgain={() => {
+                      setSettingKey('confirmExternalLinks', false, 'external');
+                      setSettings((prev) => ({
+                        ...prev,
+                        confirmExternalLinks: false,
+                      }));
+                    }}
+                  />,
+                  { dismissable: true },
+                );
+              } else {
+                parent.open(formatUrl(url), '_blank');
+              }
+            },
+          })),
+        ],
         onClick: () => {
           parent.open(urlToOpen, '_blank');
         },

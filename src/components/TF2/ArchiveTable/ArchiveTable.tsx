@@ -22,9 +22,7 @@ const ArchiveTable = ({
 }: ArchiveTableProps) => {
   // Store the users playerID
   const [userSteamID, setUserSteamID] = React.useState('0');
-  const [playerSettings, setPlayerSettings] = React.useState<
-    Settings['external']
-  >({
+  const [settings, setSettings] = React.useState<Settings['external']>({
     colors: {
       You: 'none',
       Player: 'none',
@@ -40,15 +38,15 @@ const ArchiveTable = ({
   });
 
   React.useEffect(() => {
-    const fetchTeamColors = async () => {
+    const fetchSettings = async () => {
       try {
         const { external } = await getAllSettings(); // Replace this with the actual async function that fetches colors
-        setPlayerSettings(external);
+        setSettings(external);
       } catch (error) {
         console.error('Error fetching team colors:', error);
       }
     };
-    fetchTeamColors();
+    fetchSettings();
   }, []);
 
   React.useEffect(() => {
@@ -124,11 +122,11 @@ const ArchiveTable = ({
               // Provide the Context Menu Provider to the Element
               <ContextMenuProvider key={player.steamID64}>
                 <ArchivePlayer
-                  playerColors={playerSettings.colors}
+                  playerColors={settings.colors}
                   className={teamName?.toLowerCase()}
                   player={player}
                   key={player.steamID64}
-                  openInApp={playerSettings.openInApp}
+                  openInApp={settings.openInApp}
                   cheatersInLobby={cheaters}
                   isRefreshing={refresh[0].includes(player.steamID64)}
                   setRefreshing={(b: boolean) => {
@@ -140,6 +138,8 @@ const ArchiveTable = ({
                       );
                     }
                   }}
+                  settings={settings}
+                  setSettings={setSettings}
                 />
               </ContextMenuProvider>
             ))}
