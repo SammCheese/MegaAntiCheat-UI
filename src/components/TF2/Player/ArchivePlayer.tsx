@@ -159,6 +159,13 @@ const ArchivePlayer = ({
             onClick: () => navigator.clipboard.writeText(player.name),
           },
           {
+            label: 'Profile link',
+            onClick: () =>
+              navigator.clipboard.writeText(
+                `https://steamcommunity.com/profiles/${player.steamID64}`,
+              ),
+          },
+          {
             label: `SteamID64: ${player.steamID64}`,
             onClick: () => navigator.clipboard.writeText(player.steamID64),
           },
