@@ -340,13 +340,24 @@ const Preferences = () => {
               <div className="preference-title">{t('PREF_RCON_PORT')}</div>
               <TextInput
                 type={'input'}
-                defaultValue={settings?.internal.rconPort}
+                defaultValue={settings?.internal.rconPort?.toString()}
                 onLeave={(e) => {
                   try {
                     const port = Number.parseInt(e);
+
+                    if (isNaN(port)) {
+                      throw new Error('Invalid port');
+                    }
+
+                    if (port < 1 || port > 65535) {
+                      throw new Error('Port out of range');
+                    }
+
                     handleSettingChange('rconPort', port, 'internal');
                     //eslint-disable-next-line no-empty
-                  } catch {}
+                  } catch {
+                    // Invalid port
+                  }
                 }}
               />
             </Flex>

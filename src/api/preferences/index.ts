@@ -54,7 +54,7 @@ async function setSettings(newSettings: PreferenceResponse): Promise<void> {
 
 interface PreferenceResponse {
   internal: {
-    port?: number;
+    rconPort?: number;
     tosAgreementDate: string;
     tf2Directory: string;
     rconPassword: string;
@@ -97,7 +97,7 @@ export const defaultSettings: PreferenceResponse = {
     },
   },
   internal: {
-    port: 1984,
+    rconPort: 1984,
     friendsApiUsage: '',
     tf2Directory: '',
     steamApiKey: '',

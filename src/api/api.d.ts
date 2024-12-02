@@ -22,7 +22,7 @@ interface Settings {
     dumbAutokick?: boolean;
     masterbaseKey?: string;
     masterbaseHost?: string;
-    rconPort?: string;
+    rconPort?: number;
     tosAgreementDate?: string;
   };
 }
