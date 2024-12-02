@@ -1,6 +1,6 @@
-import { getAllSettings } from '@api/preferences';
+import { getAllSettings, getSetting } from '@api/preferences';
 
-export const port = 1984;
+export const port = (getSetting('port') as unknown as number) || 1984;
 export const APIURL = `http://localhost:${port}/mac`;
 export const SERVERFETCH = `${APIURL}/game/v1`;
 export const PLAYERFETCH = `${APIURL}/user/v1`;

@@ -54,6 +54,7 @@ async function setSettings(newSettings: PreferenceResponse): Promise<void> {
 
 interface PreferenceResponse {
   internal: {
+    port?: number;
     tosAgreementDate: string;
     tf2Directory: string;
     rconPassword: string;
@@ -96,6 +97,7 @@ export const defaultSettings: PreferenceResponse = {
     },
   },
   internal: {
+    port: 1984,
     friendsApiUsage: '',
     tf2Directory: '',
     steamApiKey: '',
@@ -125,6 +127,21 @@ function mergeWithDefaults(
   return mergedSettings;
 }
 
+async function getSetting(key: string): Promise<unknown> {
+  try {
+    const settings = await getAllSettings();
+    if (key in settings.internal) {
+      return settings.internal[key as keyof typeof settings.internal];
+    } else if (key in settings.external) {
+      return settings.external[key as keyof typeof settings.external];
+    }
+    return null;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 async function getAllSettings(): Promise<PreferenceResponse> {
   try {
     const settings = await (await fetch(PREF_ENDPOINT)).json();
@@ -136,4 +153,4 @@ async function getAllSettings(): Promise<PreferenceResponse> {
   }
 }
 
-export { setSettingKey, setSettings, getAllSettings };
+export { setSettingKey, setSettings, getAllSettings, getSetting };
